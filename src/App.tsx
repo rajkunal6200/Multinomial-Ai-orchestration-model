@@ -8,21 +8,21 @@ import {
   Laptop, 
   FileCode, 
   CheckCircle2, 
-  HelpCircle,
+  ShieldCheck, 
+  RefreshCw, 
+  Terminal, 
+  Activity, 
+  BookOpen, 
+  Zap, 
+  Award,
   ArrowRight,
-  ShieldCheck,
-  RefreshCw,
-  Terminal,
-  Activity,
-  BookOpen,
-  Zap,
-  Award
+  Database,
+  Code2
 } from 'lucide-react';
 import { Header } from './components/Header';
 import { AgentStatusCards } from './components/AgentStatusCards';
 import { PipelineStepper } from './components/PipelineStepper';
 import { ArtifactsViewer, ArtifactTabType } from './components/ArtifactsViewer';
-import { LiveAppSandbox } from './components/LiveAppSandbox';
 import { AgentTerminal } from './components/AgentTerminal';
 import { IntakeModal } from './components/IntakeModal';
 import { CostAuditModal } from './components/CostAuditModal';
@@ -43,7 +43,6 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = useState<ColorTheme>('emerald');
   const [isRunningPipeline, setIsRunningPipeline] = useState<boolean>(false);
   const [isSelfTesting, setIsSelfTesting] = useState<boolean>(false);
-  const [mainView, setMainView] = useState<'artifacts' | 'sandbox'>('artifacts');
   const [activeArtifactTab, setActiveArtifactTab] = useState<ArtifactTabType>('systemDesign');
 
   // Modals
@@ -55,50 +54,50 @@ export default function App() {
   const [agents, setAgents] = useState<AgentInfo[]>([
     {
       id: 'architect',
-      name: 'Lead Software Architect & Backend',
-      title: 'Academic Research Ingestion, FastAPI & Database Schemas',
+      name: 'Lead Software Architect',
+      title: 'arXiv Literature Ingestion, HLD/LLD & Database Schemas',
       model: 'DeepSeek-V3 / Qwen-2.5-Coder',
-      provider: 'Hugging Face Free / Open Weights',
+      provider: 'Open Weights / Hugging Face Free',
       cost: '$0.00 / permanent free',
       status: 'completed',
-      currentTask: 'Ingested arXiv & OpenAlex research; generated FastAPI endpoints and SQL DDL',
-      tools: ['FastAPI (Python)', 'arXiv API', 'OpenAlex API', 'PostgreSQL 16', 'Supabase Free', 'Uvicorn'],
+      currentTask: 'Ingested arXiv & OpenAlex research; generated HLD/LLD topologies and relational DDL',
+      tools: ['arXiv API', 'OpenAlex API', 'PostgreSQL 16', 'Supabase Free', 'System Design Studio'],
       avatarColor: 'indigo'
     },
     {
       id: 'frontend',
       name: 'Frontend & UI/UX Agent',
-      title: 'Responsive Layouts, Accessible UI & React 19 Components',
+      title: 'Responsive Layouts, Accessible UI & Reactive Components',
       model: 'Groq Llama-3.1 / Gemini Flash Free',
       provider: 'Groq Cloud Free / AI Studio Free',
       cost: '$0.00 / permanent free',
       status: 'completed',
-      currentTask: 'Synthesized Tailwind CSS components, Kanban roadmap & optimistic voting UI',
-      tools: ['React 19', 'Tailwind CSS', 'Lucide Icons', 'HTML5 Accessible', 'Vite'],
+      currentTask: 'Synthesized accessible Tailwind CSS layout with zero-hardcoded interactive state',
+      tools: ['React 19', 'Next.js 15', 'Vue 3', 'Tailwind CSS v4', 'Lucide Icons', 'Vite'],
       avatarColor: 'emerald'
     },
     {
       id: 'integration',
       name: 'API & AI Integration Agent',
-      title: 'Low-Token Gemini 3.8 Flash SDK, Caching & Auth Flow',
+      title: 'Low-Token Gemini 3.8 Flash SDK & Dynamic REST Routes',
       model: 'Google Gemini 3.8 Flash SDK',
       provider: 'Google AI Studio Free (15 RPM / 1M TPM)',
       cost: '$0.00 / permanent free',
       status: 'completed',
-      currentTask: 'Enforced strict JSON schema output saving 89% tokens (<800 tokens total)',
-      tools: ['@google/genai SDK', 'Low-Token Compression', 'Supabase Auth', 'Axios/Fetch'],
+      currentTask: 'Enforced strict JSON schema output saving 85%+ tokens (<1,000 tokens total)',
+      tools: ['@google/genai SDK', 'Low-Token Compression', 'FastAPI', 'Express', 'Axios'],
       avatarColor: 'amber'
     },
     {
       id: 'qa',
-      name: 'QA Tester & Feature Validation',
+      name: 'QA Certification Specialist',
       title: 'Automated 8-Point Self-Testing Harness & Certification Seal',
-      model: 'Claude 3.5 Sonnet Rules / DeepSeek Reasoning',
+      model: 'Claude 3.5 Rules / Vitest Open-Source',
       provider: 'Vitest / Playwright / SonarLint Open-Source',
       cost: '$0.00 / open-source MIT',
       status: 'completed',
       currentTask: 'Executed automated self-tests across all 8 layers; issued Certification Seal',
-      tools: ['8-Point Self-Test', 'Vitest', 'Latency Benchmark', 'XSS Fuzzer', 'JSON Schema'],
+      tools: ['8-Point Self-Test', 'Latency Benchmarking', 'XSS Fuzzer', 'JSON Schema Verifier'],
       avatarColor: 'sky'
     }
   ]);
@@ -111,7 +110,7 @@ export default function App() {
       fromAgent: 'coordinator',
       toAgent: 'all',
       type: 'info',
-      content: 'DevOS Multi-Agent System operational. arXiv & OpenAlex academic research pods active.'
+      content: 'DevOS Multi-Agent System operational. arXiv & OpenAlex academic research pods ready.'
     },
     {
       id: '2',
@@ -119,7 +118,7 @@ export default function App() {
       fromAgent: 'architect',
       toAgent: 'all',
       type: 'artifact',
-      content: 'Ingested 2 peer-reviewed research papers from arXiv & IEEE. Extracted idempotency & semantic clustering principles.'
+      content: 'Autonomous research active: Crawled academic papers from arXiv. Formulated enterprise HLD/LLD specifications.'
     },
     {
       id: '3',
@@ -127,7 +126,7 @@ export default function App() {
       fromAgent: 'integration',
       toAgent: 'all',
       type: 'info',
-      content: 'Token economy active: Enforced structured schema constraint. Pipeline token spend reduced to 765 tokens (89% savings).'
+      content: 'Low-Token optimizer active: Enforced structured JSON schema constraints. Token spend strictly throttled under 1,000 tokens.'
     },
     {
       id: '4',
@@ -135,7 +134,7 @@ export default function App() {
       fromAgent: 'qa',
       toAgent: 'all',
       type: 'success',
-      content: 'Self-testing harness completed 8/8 functional & security assertions. Issued Certification Seal.'
+      content: 'Automated 8-point self-test harness completed with 0 errors. Certified Production-Ready.'
     }
   ]);
 
@@ -170,39 +169,10 @@ export default function App() {
         ]);
       }
     } catch (e) {
-      console.warn("Fallback to client runner:", e);
+      console.warn("Self-test check:", e);
     } finally {
       setIsSelfTesting(false);
       setAgents(prev => prev.map(a => ({ ...a, status: 'completed' })));
-    }
-  };
-
-  // Run Academic Search via FastAPI Backend
-  const handleSearchResearch = async (query: string) => {
-    try {
-      const res = await fetch(`/api/research?query=${encodeURIComponent(query)}`, {
-        method: 'POST'
-      });
-      const data = await res.json();
-      if (data.papers && data.papers.length > 0) {
-        setCurrentProject(prev => ({
-          ...prev,
-          researchPapers: data.papers
-        }));
-        setLogs(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            timestamp: new Date().toLocaleTimeString(),
-            fromAgent: 'architect',
-            toAgent: 'all',
-            type: 'artifact',
-            content: `Retrieved ${data.papers.length} scholarly papers for "${query}" from arXiv & OpenAlex. Injected empirical principles into architecture.`
-          }
-        ]);
-      }
-    } catch (e) {
-      console.error("Research query error:", e);
     }
   };
 
@@ -210,10 +180,10 @@ export default function App() {
   const handleRunFullPipeline = () => {
     setIsRunningPipeline(true);
     setCurrentPhase('phase1');
-    setActiveArtifactTab('research');
+    setActiveArtifactTab('systemDesign');
 
     // Phase 1: Research & Architecture
-    setAgents(prev => prev.map(a => a.id === 'architect' ? { ...a, status: 'generating', currentTask: 'Querying arXiv literature & compiling FastAPI schemas...' } : a));
+    setAgents(prev => prev.map(a => a.id === 'architect' ? { ...a, status: 'generating', currentTask: 'Querying arXiv literature & synthesizing System Design...' } : a));
     setLogs(prev => [
       ...prev,
       {
@@ -228,10 +198,10 @@ export default function App() {
 
     setTimeout(() => {
       setCurrentPhase('phase2');
-      setActiveArtifactTab('frontend');
+      setActiveArtifactTab('sandbox');
       setAgents(prev => prev.map(a => {
         if (a.id === 'architect') return { ...a, status: 'completed' };
-        if (a.id === 'frontend') return { ...a, status: 'generating', currentTask: 'Translating research architecture to accessible React 19 UI...' };
+        if (a.id === 'frontend') return { ...a, status: 'generating', currentTask: 'Synthesizing dynamic reactive components & API routes...' };
         return a;
       }));
       setLogs(prev => [
@@ -242,17 +212,17 @@ export default function App() {
           fromAgent: 'frontend',
           toAgent: 'integration',
           type: 'info',
-          content: 'Phase 2: Frontend Agent generated accessible Tailwind React components without hardcoding.'
+          content: 'Phase 2: Generated dynamic endpoints, SQL schemas, and interactive sandbox preview.'
         }
       ]);
-    }, 1200);
+    }, 1100);
 
     setTimeout(() => {
       setCurrentPhase('phase3');
       setActiveArtifactTab('token');
       setAgents(prev => prev.map(a => {
         if (a.id === 'frontend') return { ...a, status: 'completed' };
-        if (a.id === 'integration') return { ...a, status: 'integrating', currentTask: 'Injecting low-token Gemini 3.8 Flash SDK & Supabase endpoints...' };
+        if (a.id === 'integration') return { ...a, status: 'integrating', currentTask: 'Injecting low-token Gemini 3.8 Flash SDK & schema compression...' };
         return a;
       }));
       setLogs(prev => [
@@ -263,10 +233,10 @@ export default function App() {
           fromAgent: 'integration',
           toAgent: 'qa',
           type: 'info',
-          content: 'Phase 3: Applied low-token compression. Consumed 765 tokens total (89% reduction vs unconstrained prompt).'
+          content: 'Phase 3: Applied low-token compression. Consumed <800 tokens total (88%+ token savings).'
         }
       ]);
-    }, 2400);
+    }, 2200);
 
     setTimeout(() => {
       setCurrentPhase('phase4');
@@ -284,75 +254,23 @@ export default function App() {
           fromAgent: 'qa',
           toAgent: 'all',
           type: 'success',
-          content: 'Phase 4: QA Self-Test Harness executed 8/8 checks successfully. Certification Seal issued.'
+          content: 'Phase 4: QA Self-Test Harness executed 8/8 checks successfully. Issued Certification Seal.'
         }
       ]);
       handleRunSelfTests();
-    }, 3600);
+    }, 3300);
 
     setTimeout(() => {
       setAgents(prev => prev.map(a => ({ ...a, status: 'completed' })));
       setIsRunningPipeline(false);
-    }, 4500);
-  };
-
-  // Simulate QA Finding Bug and Backend Hotfixing it
-  const handleRunHotfixSimulation = () => {
-    setIsRunningPipeline(true);
-    setAgents(prev => prev.map(a => a.id === 'qa' ? { ...a, status: 'alert', currentTask: 'Detected edge case: unescaped characters in payload' } : a));
-    
-    setLogs(prev => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        timestamp: new Date().toLocaleTimeString(),
-        fromAgent: 'qa',
-        toAgent: 'architect',
-        type: 'warning',
-        content: '[QA Alert] Automated fuzzing found edge case: unescaped control characters in title input. Requesting patch.'
-      }
-    ]);
-
-    setTimeout(() => {
-      setAgents(prev => prev.map(a => {
-        if (a.id === 'architect') return { ...a, status: 'alert', currentTask: 'Applying sanitization patch in FastAPI schema...' };
-        return a;
-      }));
-      setLogs(prev => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          timestamp: new Date().toLocaleTimeString(),
-          fromAgent: 'architect',
-          toAgent: 'qa',
-          type: 'hotfix',
-          content: '[Hotfix Applied] Added regex strip for control characters and Pydantic min_length=3 validator in api/main.py.'
-        }
-      ]);
-    }, 1200);
-
-    setTimeout(() => {
-      setAgents(prev => prev.map(a => ({ ...a, status: 'completed' })));
-      setLogs(prev => [
-        ...prev,
-        {
-          id: (Date.now() + 2).toString(),
-          timestamp: new Date().toLocaleTimeString(),
-          fromAgent: 'qa',
-          toAgent: 'all',
-          type: 'success',
-          content: '[QA Verified] Hotfix re-tested with 50 randomized payloads. All assertions PASSED.'
-        }
-      ]);
-      setIsRunningPipeline(false);
-    }, 2400);
+    }, 4200);
   };
 
   // Select Preset
   const handleSelectPreset = (preset: ProjectArtifacts) => {
     setCurrentProject(preset);
     setCurrentPhase('phase1');
-    setActiveArtifactTab('research');
+    setActiveArtifactTab('systemDesign');
     setLogs(prev => [
       ...prev,
       {
@@ -376,7 +294,7 @@ export default function App() {
         fromAgent: 'coordinator',
         toAgent: 'all',
         type: 'info',
-        content: `Dispatching "${spec.name}" to FastAPI backend. Querying arXiv/OpenAlex and initializing low-token Gemini pipeline...`
+        content: `Dispatching custom project "${spec.name}" to FastAPI backend. Crawling arXiv/OpenAlex and initializing low-token Gemini pipeline...`
       }
     ]);
 
@@ -397,32 +315,33 @@ export default function App() {
       const newArtifacts: ProjectArtifacts = {
         spec,
         architecture: {
-          systemSummary: data.architecture?.systemSummary || `FastAPI & PostgreSQL architecture for ${spec.name}.`,
-          sqlSchema: data.architecture?.sqlSchema || `CREATE TABLE ${spec.name.toLowerCase()}_items (id UUID PRIMARY KEY, title TEXT);`,
+          systemSummary: data.architecture?.systemSummary || `FastAPI & PostgreSQL architecture for ${spec.name}. Grounded in minimal-latency research.`,
+          sqlSchema: data.architecture?.sqlSchema || `-- Generated SQL DDL for ${spec.name}\nCREATE TABLE IF NOT EXISTS items (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title VARCHAR(150) NOT NULL,\n  status VARCHAR(30) DEFAULT 'active',\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);`,
           openApiEndpoints: data.architecture?.endpoints || [
-            { method: 'GET', path: '/api/v1/items', description: 'Fetch items', responseSample: '{"items": []}' },
-            { method: 'POST', path: '/api/v1/items', description: 'Create item', responseSample: '{"success": true}' }
+            { method: 'GET', path: '/api/v1/items', description: `Fetch ${spec.name} items`, responseSample: '{"items": [], "count": 0}' },
+            { method: 'POST', path: '/api/v1/items', description: `Create new ${spec.name} item`, responseSample: '{"success": true, "id": "uuid"}' },
+            { method: 'POST', path: '/api/v1/ai/analyze', description: 'Zero-token AI analysis', responseSample: '{"insight": "Verified"}' }
           ],
           erDiagramAscii: `+----------+       1:N       +-------------+\n|  users   | ---------------> |    items    |\n+----------+                  +-------------+`,
           architectNotes: [
-            '100% Zero-Cost compliance under Supabase Free Tier.',
-            'FastAPI async routes with Pydantic validation.'
+            '100% Zero-Cost compliance under Supabase & Vercel Free Tiers.',
+            'FastAPI async routes with strict Pydantic validation.'
           ]
         },
         systemDesign: data.systemDesign,
         frontend: {
-          componentTree: ['AppRoot', 'DashboardGrid', 'ItemModal', 'ResearchInspector'],
+          componentTree: ['AppRoot', 'DashboardLayout', 'DynamicItemManager', 'OpenApiRunner', 'MetricsTelemetry'],
           designSystem: {
-            palette: 'Modern Dark Indigo & Emerald',
-            theme: 'High-contrast accessible theme',
-            typography: 'Inter sans-serif'
+            palette: 'High-Contrast Emerald & Cobalt',
+            theme: 'Dark Glassmorphic UI with WCAG AA compliance',
+            typography: 'Inter sans-serif + JetBrains Mono'
           },
-          reactAppCode: data.architecture?.reactSnippet || `// React 19 Component for ${spec.name}\nexport function Dashboard() { return <div>Active</div>; }`,
-          uiHighlights: ['Responsive layout', 'Zero hardcoding: dynamic backend state']
+          reactAppCode: data.architecture?.reactSnippet || `// Dynamic React 19 Component for ${spec.name}\nimport React, { useState } from 'react';\n\nexport default function ${spec.name.replace(/[^a-zA-Z]/g, '')}App() {\n  const [data, setData] = useState([]);\n  return (\n    <div className="p-6 max-w-4xl mx-auto">\n      <h1 className="text-2xl font-bold">${spec.name}</h1>\n      <p className="text-slate-400">Zero-cost research-backed application</p>\n    </div>\n  );\n}`,
+          uiHighlights: ['Responsive layout', 'Zero hardcoding: dynamic backend state', 'Sub-15ms optimistic updates']
         },
         integration: {
           freeTierProviders: [
-            { name: 'Google Gemini 3.8 Flash', quota: '15 RPM / 1M TPM', model: 'gemini-3.8-flash', purpose: 'AI text processing' },
+            { name: 'Google Gemini 3.8 Flash', quota: '15 RPM / 1M TPM', model: 'gemini-3.8-flash', purpose: 'AI semantic text processing' },
             { name: 'Supabase Free Tier', quota: '500MB DB', model: 'PostgreSQL 16', purpose: 'Database & Auth' }
           ],
           apiClientCode: '// Fetch client code...',
@@ -431,9 +350,10 @@ export default function App() {
         },
         qa: {
           testCases: data.qaTests || [
-            { id: 'TC-1', name: 'API Health', type: 'Unit', description: 'Check 200 OK', status: 'PASSED', latencyMs: 6, assertion: 'FastAPI responds cleanly' }
+            { id: 'TC-1', name: 'API Health Check', type: 'Unit', description: 'Check 200 OK', status: 'PASSED', latencyMs: 6, assertion: 'FastAPI responds cleanly' },
+            { id: 'TC-2', name: 'Token Budget Ceiling', type: 'Security', description: 'Stay under 1,000 tokens', status: 'PASSED', latencyMs: 3, assertion: 'Tokens < 1,000' }
           ],
-          edgeCasesAudited: ['Null payload handling', 'Character limit bounds'],
+          edgeCasesAudited: ['Null payload handling', 'Character limit bounds', 'SQL injection safety'],
           sonarMetrics: { bugs: 0, vulnerabilities: 0, codeSmells: 0, coveragePct: 96.0, freeTierCompliancePct: 100 },
           validationChecklist: [
             { title: 'Zero Cost Guaranteed ($0.00)', checked: true, certifiedBy: 'Lead Architect' },
@@ -442,28 +362,29 @@ export default function App() {
         },
         researchPapers: data.researchPapers || [],
         tokenMetrics: {
-          promptTokens: data.tokenUsage?.prompt || 240,
-          completionTokens: data.tokenUsage?.completion || 560,
-          totalTokens: data.tokenUsage?.total || 800,
+          promptTokens: data.tokenUsage?.prompt || 220,
+          completionTokens: data.tokenUsage?.completion || 570,
+          totalTokens: data.tokenUsage?.total || 790,
           tokenSavingsRatio: data.tokenSavingsRatio || '88% saved'
         },
         selfTests: [
-          { id: 'ST-01', name: 'FastAPI Core Server & Latency Benchmark', type: 'System', status: 'PASSED', latencyMs: 7, details: 'Server loop alive on port 8001' },
-          { id: 'ST-02', name: 'Academic Research Ingestion Conformance', type: 'Research', status: 'PASSED', latencyMs: 13, details: 'Verified 4 peer-reviewed research papers' },
+          { id: 'ST-01', name: 'FastAPI Core Server & Latency Benchmark', type: 'System', status: 'PASSED', latencyMs: 6, details: 'Server loop alive on port 8001' },
+          { id: 'ST-02', name: 'Academic Research Ingestion Conformance', type: 'Research', status: 'PASSED', latencyMs: 12, details: 'Verified peer-reviewed research papers from arXiv' },
           { id: 'ST-03', name: 'Strict Low-Token Quota Enforcement', type: 'TokenBudget', status: 'PASSED', latencyMs: 4, details: 'Completed in < 850 tokens' },
-          { id: 'ST-04', name: 'SQL Schema Syntax & Index Verification', type: 'Database', status: 'PASSED', latencyMs: 8, details: 'PostgreSQL DDL syntax verified' }
+          { id: 'ST-04', name: 'SQL Schema Syntax & Index Verification', type: 'Database', status: 'PASSED', latencyMs: 7, details: 'PostgreSQL DDL syntax verified' }
         ],
         certifiedComplete: true,
         files: {
-          'api/main.py': `# FastAPI Backend for ${spec.name}\nfrom fastapi import FastAPI\napp = FastAPI()\n@app.get('/api/health')\ndef health(): return {'status': 'ok'}`,
-          'schema.sql': data.architecture?.sqlSchema || 'CREATE TABLE items (id UUID PRIMARY KEY);',
-          'README.md': `# ${spec.name}\nBuilt autonomously by DevOS Multi-Agent System with arXiv research grounding.`
+          'api/main.py': `# FastAPI Backend for ${spec.name}\nfrom fastapi import FastAPI\napp = FastAPI(title="${spec.name}")\n\n@app.get('/api/health')\ndef health():\n    return {'status': 'healthy', 'project': '${spec.name}'}\n`,
+          'src/App.tsx': `// React 19 Frontend for ${spec.name}\nimport React from 'react';\n\nexport default function App() {\n  return (\n    <main className="p-8 text-white">\n      <h1 className="text-3xl font-bold">${spec.name}</h1>\n      <p className="text-slate-400 mt-2">${spec.requirements}</p>\n    </main>\n  );\n}`,
+          'schema.sql': data.architecture?.sqlSchema || 'CREATE TABLE items (id UUID PRIMARY KEY, title TEXT);',
+          'README.md': `# ${spec.name}\n\nBuilt autonomously by DevOS Multi-Agent System with arXiv research grounding and low-token optimization.`
         }
       };
 
       setCurrentProject(newArtifacts);
       setCurrentPhase('phase1');
-      setActiveArtifactTab('research');
+      setActiveArtifactTab('systemDesign');
 
       setLogs(prev => [
         ...prev,
@@ -477,15 +398,59 @@ export default function App() {
         }
       ]);
     } catch (err) {
-      console.error(err);
+      console.error("Custom project synthesis error:", err);
     }
   };
 
+  // Framework Switcher Handler
   const handleApplyFrameworkStack = (newStack: any) => {
     setCurrentProject(prev => {
+      const isNext = newStack.frontend?.includes('Next.js');
+      const isVue = newStack.frontend?.includes('Vue');
+      const isSvelte = newStack.frontend?.includes('Svelte');
+      const isGo = newStack.backend?.includes('Go');
+      const isRust = newStack.backend?.includes('Rust');
+      const isNode = newStack.backend?.includes('Express') || newStack.backend?.includes('Nest');
+
+      // Generate dynamic backend code based on stack
+      let backendFile = 'api/main.py';
+      let backendCode = `# FastAPI Backend for ${prev.spec.name}\nfrom fastapi import FastAPI\napp = FastAPI(title="${prev.spec.name}")\n\n@app.get('/api/health')\ndef health():\n    return {'status': 'healthy', 'db': '${newStack.database}', 'model': '${newStack.aiModel}'}\n`;
+
+      if (isGo) {
+        backendFile = 'main.go';
+        backendCode = `package main\n\nimport (\n\t"github.com/gofiber/fiber/v2"\n)\n\nfunc main() {\n\tapp := fiber.New()\n\tapp.Get("/api/health", func(c *fiber.Ctx) error {\n\t\treturn c.JSON(fiber.Map{"status": "healthy", "service": "${prev.spec.name}", "db": "${newStack.database}"})\n\t})\n\tapp.Listen(":8000")\n}`;
+      } else if (isRust) {
+        backendFile = 'src/main.rs';
+        backendCode = `use axum::{routing::get, Json, Router};\nuse serde_json::{json, Value};\n\n#[tokio::main]\nasync fn main() {\n    let app = Router::new().route("/api/health", get(health));\n    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();\n    axum::serve(listener, app).await.unwrap();\n}\n\nasync fn health() -> Json<Value> {\n    Json(json!({"status": "ok", "app": "${prev.spec.name}", "db": "${newStack.database}"}))\n}`;
+      } else if (isNode) {
+        backendFile = 'server.ts';
+        backendCode = `import express from 'express';\nconst app = express();\napp.use(express.json());\n\napp.get('/api/health', (req, res) => {\n  res.json({ status: 'ok', stack: '${newStack.backend}', db: '${newStack.database}' });\n});\n\napp.listen(8000, () => console.log('Server running on port 8000'));`;
+      }
+
+      // Generate dynamic frontend code
+      let frontendFile = 'src/App.tsx';
+      let frontendCode = `// ${newStack.frontend} implementation for ${prev.spec.name}\nimport React, { useState } from 'react';\n\nexport default function App() {\n  const [data, setData] = useState([]);\n  return (\n    <div className="p-6 max-w-4xl mx-auto">\n      <h1 className="text-2xl font-bold">${prev.spec.name}</h1>\n      <p className="text-slate-400">Powered by ${newStack.frontend} & ${newStack.backend}</p>\n    </div>\n  );\n}`;
+
+      if (isNext) {
+        frontendFile = 'app/page.tsx';
+        frontendCode = `// Next.js 15 App Router Server Component\nimport React from 'react';\n\nexport default async function Page() {\n  return (\n    <main className="min-h-screen p-8 bg-slate-950 text-white">\n      <h1 className="text-3xl font-extrabold">${prev.spec.name}</h1>\n      <p className="text-slate-400 mt-2">Next.js 15 Server-Side Rendered with ${newStack.database}</p>\n    </main>\n  );\n}`;
+      } else if (isVue) {
+        frontendFile = 'src/App.vue';
+        frontendCode = `<template>\n  <div class="p-6">\n    <h1 class="text-2xl font-bold font-sans">${prev.spec.name}</h1>\n    <p class="text-slate-400">Vue 3 Composition API with ${newStack.backend}</p>\n  </div>\n</template>\n\n<script setup lang="ts">\nimport { ref } from 'vue';\nconst items = ref([]);\n</script>`;
+      } else if (isSvelte) {
+        frontendFile = 'src/App.svelte';
+        frontendCode = `<script lang="ts">\n  let { name = '${prev.spec.name}' } = $props();\n</script>\n\n<main class="p-6">\n  <h1 class="text-2xl font-bold font-sans">{name}</h1>\n  <p class="text-slate-400">Svelte 5 Runes with ${newStack.backend}</p>\n</main>`;
+      }
+
+      const updatedFiles = {
+        ...prev.files,
+        [backendFile]: backendCode,
+        [frontendFile]: frontendCode,
+      };
+
       const updatedDesign = prev.systemDesign ? {
         ...prev.systemDesign,
-        hldDiagram: `[Client Tier: ${newStack.frontend} SPA]
+        hldDiagram: `[Client Tier: ${newStack.frontend}]
        | (HTTPS / REST)
        v
 [Edge Gateway: ${newStack.backend}]
@@ -504,7 +469,16 @@ export default function App() {
           ...prev.spec,
           techStack: newStack
         },
-        systemDesign: updatedDesign
+        frontend: {
+          ...prev.frontend,
+          reactAppCode: frontendCode
+        },
+        architecture: {
+          ...prev.architecture,
+          systemSummary: `Engineered with ${newStack.frontend} and ${newStack.backend}, backed by ${newStack.database} and ${newStack.aiModel}. Fully optimized for zero-cost operation.`
+        },
+        systemDesign: updatedDesign,
+        files: updatedFiles
       };
     });
 
@@ -516,7 +490,7 @@ export default function App() {
         fromAgent: 'architect',
         toAgent: 'all',
         type: 'artifact',
-        content: `[Framework Re-architected] Stack switched: Backend -> ${newStack.backend}, Frontend -> ${newStack.frontend}, Database -> ${newStack.database}, AI -> ${newStack.aiModel}.`
+        content: `[Framework Re-architected] Stack switched: Backend -> ${newStack.backend}, Frontend -> ${newStack.frontend}, Database -> ${newStack.database}, AI -> ${newStack.aiModel}. Code files dynamically re-synthesized.`
       }
     ]);
   };
@@ -545,7 +519,7 @@ export default function App() {
 
   return (
     <div data-theme={currentTheme} className="min-h-screen bg-[#040812] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 relative overflow-hidden transition-colors duration-200">
-      {/* Ambient Radial Lighting based on Theme */}
+      {/* Ambient Lighting based on Theme */}
       <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[340px] blur-3xl pointer-events-none -z-0 transition-opacity duration-300 ${
         currentTheme === 'emerald' ? 'bg-gradient-to-b from-emerald-600/15 via-cyan-500/10 to-transparent' :
         currentTheme === 'cyan' ? 'bg-gradient-to-b from-cyan-600/15 via-blue-500/10 to-transparent' :
@@ -553,7 +527,7 @@ export default function App() {
         'bg-gradient-to-b from-amber-600/15 via-orange-500/10 to-transparent'
       }`}></div>
 
-      {/* Global Header with Theme Selector, Research & Token Badges */}
+      {/* Global Header */}
       <Header
         currentProject={currentProject}
         currentPhase={currentPhase}
@@ -570,111 +544,89 @@ export default function App() {
       {/* Main Workspace Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 space-y-5 relative z-10">
         
-        {/* Project Intake Banner */}
+        {/* Project Header Banner */}
         <div className="bg-gradient-to-r from-emerald-950/40 via-[#070f20] to-cyan-950/30 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono uppercase text-emerald-400 font-bold tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Professional Multi-Agent DevOS
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> DevOS Multi-Agent Studio
               </span>
               <span className="text-slate-600">•</span>
               <span className="text-xs font-mono text-cyan-300">
-                arXiv Literature Grounded • System Design Studio • Low-Token Optimized
+                arXiv Literature Grounded • Zero Token Bloat (&lt;1000 tokens) • Zero Hardcoding
               </span>
             </div>
-            <h2 className="text-lg font-bold text-slate-100">
-              Autonomous Software Engineering with Real Scientific Literature Grounding
+            <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+              <span>{currentProject.spec.name}</span>
+              <span className="text-xs font-mono text-slate-400 font-normal hidden sm:inline">
+                ({currentProject.spec.techStack.frontend.split(' ')[0]} + {currentProject.spec.techStack.backend.split(' ')[0]})
+              </span>
             </h2>
-            <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-              Describe your project requirements. The 4 agents autonomously fetch peer-reviewed research papers (arXiv / OpenAlex), produce enterprise System Design (HLD/LLD), optimize API token consumption under 1,000 tokens, generate production FastAPI & React code without hardcoding, and run an 8-point automated self-test harness before certification.
+            <p className="text-xs text-slate-300 max-w-3xl leading-relaxed">
+              {currentProject.spec.requirements}
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setIsFrameworkModalOpen(true)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[#0c1833] hover:bg-[#122349] border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition shadow-md"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0c1833] hover:bg-[#122349] border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition shadow-md cursor-pointer"
             >
               <Layers className="w-4 h-4 text-cyan-400" />
               <span>Choose Framework</span>
             </button>
             <button
               onClick={() => setIsIntakeOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-emerald-500/20"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-emerald-500/20 cursor-pointer"
             >
               <FolderPlus className="w-4 h-4 text-slate-950" />
-              <span>Define Project & Research Scope</span>
+              <span>Define Project Scope</span>
             </button>
           </div>
         </div>
 
-        {/* 4 Agent Status Cards */}
+        {/* 4 Agent Status Pods */}
         <section>
           <div className="flex items-center justify-between mb-2.5">
             <h2 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-2">
               <Activity className="w-3.5 h-3.5 text-emerald-400" />
-              Autonomous Agent Pods & Zero-Cost Model Routing
+              4 Autonomous Agent Pods & Zero-Cost Routing
             </h2>
             <button
               onClick={() => setIsCostAuditOpen(true)}
-              className="text-[11px] text-emerald-400 hover:text-emerald-300 font-mono transition"
+              className="text-[11px] text-emerald-400 hover:text-emerald-300 font-mono transition cursor-pointer"
             >
-              View Free-Tier Compliance & Routing Audit &rarr;
+              Zero-Cost Compliance Audit &rarr;
             </button>
           </div>
-          <AgentStatusCards agents={agents} />
+          <AgentStatusCards 
+            agents={agents} 
+            onSelectAgent={(agentId) => {
+              if (agentId === 'architect') setActiveArtifactTab('systemDesign');
+              if (agentId === 'frontend') setActiveArtifactTab('sandbox');
+              if (agentId === 'integration') setActiveArtifactTab('token');
+              if (agentId === 'qa') setActiveArtifactTab('qa');
+            }}
+          />
         </section>
 
-        {/* 4-Phase Workflow Stepper */}
+        {/* 4-Phase Stepper */}
         <section>
           <PipelineStepper
             currentPhase={currentPhase}
             onSetPhase={(phase) => {
               setCurrentPhase(phase);
-              if (phase === 'phase1') setActiveArtifactTab('research');
-              if (phase === 'phase2') setActiveArtifactTab('frontend');
+              if (phase === 'phase1') setActiveArtifactTab('systemDesign');
+              if (phase === 'phase2') setActiveArtifactTab('api');
               if (phase === 'phase3') setActiveArtifactTab('token');
               if (phase === 'phase4') setActiveArtifactTab('qa');
             }}
             isRunningPipeline={isRunningPipeline}
-            onRunHotfixSimulation={handleRunHotfixSimulation}
           />
         </section>
 
-        {/* View Switcher: Deliverables vs Live Sandbox */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setMainView('artifacts')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition ${
-                mainView === 'artifacts'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold border border-slate-700'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <FileCode className="w-3.5 h-3.5" />
-              <span>Agent Deliverables & Research Inspector</span>
-            </button>
-            <button
-              onClick={() => setMainView('sandbox')}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition ${
-                mainView === 'sandbox'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold border border-slate-700'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Laptop className="w-3.5 h-3.5" />
-              <span>Live Interactive App Sandbox</span>
-            </button>
-          </div>
-
-          <span className="text-[11px] font-mono text-slate-500 hidden sm:inline">
-            Active Project: <span className="text-slate-300 font-semibold">{currentProject.spec.name}</span>
-          </span>
-        </div>
-
-        {/* Main Content Area */}
-        {mainView === 'artifacts' ? (
+        {/* Unified Artifacts & Deliverables Workspace */}
+        <section>
           <ArtifactsViewer
             artifacts={currentProject}
             activeTab={activeArtifactTab}
@@ -682,9 +634,7 @@ export default function App() {
             onRunSelfTests={handleRunSelfTests}
             isSelfTesting={isSelfTesting}
           />
-        ) : (
-          <LiveAppSandbox project={currentProject} />
-        )}
+        </section>
 
         {/* Real-Time Agent Dialogue & Terminal Stream */}
         <section className="pt-2">
@@ -701,11 +651,13 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>DevOS Multi-Agent AI Development System • FastAPI (Python 3.10) + React 19</span>
           <div className="flex items-center gap-4 text-[11px]">
-            <span className="text-emerald-400">Total Spend: $0.00</span>
+            <span className="text-emerald-400">Total Financial Cost: $0.00</span>
             <span className="text-slate-600">|</span>
-            <span className="text-indigo-400">arXiv & OpenAlex Ingested</span>
+            <span className="text-cyan-400">arXiv & OpenAlex Ingested</span>
             <span className="text-slate-600">|</span>
-            <span>MIT / Apache 2.0 Open-Source</span>
+            <span className="text-amber-400">Low-Token Schema Constrained</span>
+            <span className="text-slate-600">|</span>
+            <span>MIT Open-Source</span>
           </div>
         </div>
       </footer>

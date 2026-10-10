@@ -12,20 +12,31 @@ import {
   Download, 
   ExternalLink,
   Sparkles,
-  CheckCircle2,
+  CheckCircle2, 
   AlertCircle,
   BookOpen,
   Zap,
   Activity,
-  Network
+  Network,
+  Laptop
 } from 'lucide-react';
-import { ProjectArtifacts, TestCase } from '../types';
+import { ProjectArtifacts } from '../types';
 import { ResearchViewer } from './ResearchViewer';
 import { TokenBudgetMeter } from './TokenBudgetMeter';
 import { SelfTestHarness } from './SelfTestHarness';
 import { SystemDesignStudio } from './SystemDesignStudio';
+import { LiveAppSandbox } from './LiveAppSandbox';
 
-export type ArtifactTabType = 'systemDesign' | 'research' | 'architecture' | 'api' | 'frontend' | 'token' | 'qa' | 'files';
+export type ArtifactTabType = 
+  | 'systemDesign' 
+  | 'research' 
+  | 'sandbox'
+  | 'architecture' 
+  | 'api' 
+  | 'frontend' 
+  | 'token' 
+  | 'qa' 
+  | 'files';
 
 interface ArtifactsViewerProps {
   artifacts: ProjectArtifacts;
@@ -43,7 +54,9 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
   isSelfTesting = false
 }) => {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [activeFile, setActiveFile] = useState<string>('api/main.py');
+  const [activeFile, setActiveFile] = useState<string>(() => {
+    return Object.keys(artifacts.files)[0] || 'api/main.py';
+  });
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -51,19 +64,30 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
+  const handleDownloadFiles = () => {
+    const content = JSON.stringify(artifacts.files, null, 2);
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${artifacts.spec.id || 'project'}-codebase.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const tabs = [
-    { id: 'systemDesign', label: 'System Design (HLD/LLD)', icon: Network, agent: 'Architect Pod' },
-    { id: 'research', label: 'Autonomous Research (arXiv)', icon: BookOpen, agent: 'Scholarly Crawler' },
-    { id: 'architecture', label: 'Database & SQL DDL', icon: Database, agent: 'Data Architect' },
-    { id: 'api', label: 'FastAPI & OpenAPI 3.1', icon: Code2, agent: 'Backend Agent' },
-    { id: 'frontend', label: 'React 19 UI Layout', icon: Layout, agent: 'UI/UX Agent' },
-    { id: 'token', label: 'Low-Token Economy', icon: Zap, agent: 'Optimizer' },
-    { id: 'qa', label: '8-Point Self-Test Seal', icon: ShieldCheck, agent: 'QA Agent' },
-    { id: 'files', label: 'Workspace Files', icon: FolderTree, agent: 'Codebase' },
+    { id: 'systemDesign', label: 'System Design (HLD/LLD)', icon: Network, pod: 'Architect' },
+    { id: 'research', label: 'arXiv Research Grounding', icon: BookOpen, pod: 'Scholar' },
+    { id: 'sandbox', label: 'Interactive App Sandbox', icon: Laptop, pod: 'Runtime' },
+    { id: 'architecture', label: 'Database & SQL DDL', icon: Database, pod: 'Database' },
+    { id: 'api', label: 'FastAPI & OpenAPI 3.1', icon: Code2, pod: 'REST API' },
+    { id: 'files', label: 'Workspace Files', icon: FolderTree, pod: 'Codebase' },
+    { id: 'token', label: 'Low-Token Economy', icon: Zap, pod: 'Optimizer' },
+    { id: 'qa', label: '8-Point QA Self-Test', icon: ShieldCheck, pod: 'Certifier' },
   ] as const;
 
   return (
-    <div className="bg-[#070f20] border border-[#142845] rounded-2xl overflow-hidden shadow-xl flex flex-col min-h-[580px]">
+    <div className="bg-[#070f20] border border-[#142845] rounded-2xl overflow-hidden shadow-2xl flex flex-col min-h-[600px]">
       {/* Tab Navigation */}
       <div className="flex border-b border-[#142845] bg-[#050b18]/90 overflow-x-auto scrollbar-none">
         {tabs.map((tab) => {
@@ -81,8 +105,8 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
             >
               <IconComponent className={`w-3.5 h-3.5 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
               <span>{tab.label}</span>
-              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-[#142845] text-slate-300 hidden xl:inline">
-                {tab.agent}
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#142845] text-slate-300 hidden xl:inline">
+                {tab.pod}
               </span>
             </button>
           );
@@ -108,28 +132,17 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
           />
         )}
 
-        {/* TAB 3: LOW-TOKEN ECONOMY */}
-        {activeTab === 'token' && (
-          <TokenBudgetMeter metrics={artifacts.tokenMetrics} />
+        {/* TAB 3: DYNAMIC INTERACTIVE RUNTIME SANDBOX */}
+        {activeTab === 'sandbox' && (
+          <LiveAppSandbox project={artifacts} />
         )}
 
-        {/* TAB 4: SELF-TESTING & QA */}
-        {activeTab === 'qa' && (
-          <SelfTestHarness
-            tests={artifacts.selfTests}
-            certifiedComplete={artifacts.certifiedComplete}
-            projectId={artifacts.spec.id}
-            onRunTests={onRunSelfTests}
-            isRunning={isSelfTesting}
-          />
-        )}
-
-        {/* TAB 5: ARCHITECTURE & DATABASE */}
+        {/* TAB 4: DATABASE & SQL DDL */}
         {activeTab === 'architecture' && (
           <div className="space-y-5 animate-in fade-in duration-150">
             {/* System Summary */}
-            <div className="p-4 rounded-xl bg-[#0c101c] border border-violet-500/20">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-violet-400 font-semibold mb-1 flex items-center gap-1.5">
+            <div className="p-4 rounded-xl bg-[#0c1833] border border-cyan-500/20">
+              <h3 className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold mb-1 flex items-center gap-1.5">
                 <Database className="w-3.5 h-3.5" /> Database & Schema Architecture
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
@@ -138,84 +151,85 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
             </div>
 
             {/* SQL Schema DDL */}
-            <div className="border border-[#1b233a] rounded-xl overflow-hidden bg-[#07090e]">
-              <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d1222] border-b border-[#1b233a]">
+            <div className="border border-[#142845] rounded-xl overflow-hidden bg-[#050b18]">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-[#0c1833] border-b border-[#142845]">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-medium text-slate-200">schema.sql</span>
-                  <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/20">
-                    PostgreSQL 16 / Supabase Free Tier
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/20">
+                    {artifacts.spec.techStack.database}
                   </span>
                 </div>
                 <button
                   onClick={() => handleCopy(artifacts.architecture.sqlSchema, 'sql')}
-                  className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 px-2.5 py-1 rounded bg-[#161c2e] transition"
+                  className="flex items-center gap-1 text-[11px] text-slate-300 hover:text-white px-2.5 py-1 rounded bg-[#142845] hover:bg-[#1c3960] transition"
                 >
-                  {copiedKey === 'sql' ? <Check className="w-3 h-3 text-cyan-400" /> : <Copy className="w-3 h-3" />}
+                  {copiedKey === 'sql' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedKey === 'sql' ? 'Copied' : 'Copy SQL'}</span>
                 </button>
               </div>
-              <pre className="p-4 text-xs font-mono text-cyan-300/90 overflow-x-auto max-h-72 leading-relaxed">
+              <pre className="p-4 text-xs font-mono text-emerald-300/90 overflow-x-auto max-h-72 leading-relaxed">
                 {artifacts.architecture.sqlSchema}
               </pre>
             </div>
 
-            {/* ER Diagram ASCII & Architect Notes */}
+            {/* ER Diagram ASCII & Notes */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="border border-[#1b233a] rounded-xl p-4 bg-[#0c101c]">
+              <div className="border border-[#142845] rounded-xl p-4 bg-[#0c1833]">
                 <h4 className="text-xs font-mono text-slate-300 font-semibold mb-2">
-                  Relational Entity-Relationship Diagram (ASCII)
+                  Relational Entity-Relationship Model (ASCII)
                 </h4>
-                <pre className="text-[11px] font-mono text-slate-400 bg-[#07090e] p-3 rounded-lg border border-[#1b233a] overflow-x-auto leading-relaxed">
+                <pre className="text-[11px] font-mono text-cyan-300/80 bg-[#050b18] p-3 rounded-lg border border-[#142845] overflow-x-auto leading-relaxed">
                   {artifacts.architecture.erDiagramAscii}
                 </pre>
               </div>
 
-              <div className="border border-[#1b233a] rounded-xl p-4 bg-[#0c101c] flex flex-col justify-between">
+              <div className="border border-[#142845] rounded-xl p-4 bg-[#0c1833] flex flex-col justify-between">
                 <div>
                   <h4 className="text-xs font-mono text-slate-300 font-semibold mb-2">
-                    Architectural Enforcement Notes
+                    Architectural Enforcement Directives
                   </h4>
                   <ul className="space-y-2">
                     {artifacts.architecture.architectNotes.map((note, idx) => (
-                      <li key={idx} className="text-xs text-slate-400 flex items-start gap-2">
-                        <span className="text-cyan-400 mt-0.5">•</span>
+                      <li key={idx} className="text-xs text-slate-300 flex items-start gap-2">
+                        <span className="text-emerald-400 mt-0.5">•</span>
                         <span>{note}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="mt-4 pt-3 border-t border-[#1b233a] text-[11px] font-mono text-cyan-400">
-                  Target: 0 database hosting fees under 500MB storage ceiling
+                <div className="mt-4 pt-3 border-t border-[#142845] text-[11px] font-mono text-emerald-400">
+                  Storage Ceiling: 500MB Free Tier with Index-Covered Queries
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 6: API & OPENAPI 3.1 */}
+        {/* TAB 5: API & OPENAPI 3.1 */}
         {activeTab === 'api' && (
           <div className="space-y-4 animate-in fade-in duration-150">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-xs font-semibold text-slate-200">
-                  Documented REST API Endpoints (OpenAPI 3.1 / FastAPI Swagger Spec)
+                <h3 className="text-xs font-semibold text-slate-100 flex items-center gap-2">
+                  <Code2 className="w-4 h-4 text-cyan-400" />
+                  REST API Endpoints (OpenAPI 3.1 Specification)
                 </h3>
                 <p className="text-[11px] text-slate-400">
-                  Built by Backend Agent using FastAPI (Python) with parameterized SQL safety & interactive Swagger at /docs
+                  Synthesized for {artifacts.spec.name} with Pydantic validation & OpenAPI interactive Swagger at /docs
                 </p>
               </div>
               <button
                 onClick={() => handleCopy(JSON.stringify(artifacts.architecture.openApiEndpoints, null, 2), 'endpoints')}
-                className="flex items-center gap-1 text-xs text-slate-300 hover:text-slate-100 px-2.5 py-1.5 rounded-lg bg-[#161c2e] hover:bg-[#1b233a] transition"
+                className="flex items-center gap-1 text-xs text-slate-200 hover:text-white px-2.5 py-1.5 rounded-lg bg-[#0c1833] hover:bg-[#142845] border border-[#142845] transition shrink-0"
               >
-                {copiedKey === 'endpoints' ? <Check className="w-3.5 h-3.5 text-cyan-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedKey === 'endpoints' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>Copy OpenAPI JSON</span>
               </button>
             </div>
 
             <div className="space-y-3">
               {artifacts.architecture.openApiEndpoints.map((ep, idx) => (
-                <div key={idx} className="border border-[#1b233a] rounded-xl bg-[#0c101c] p-4 space-y-2.5">
+                <div key={idx} className="border border-[#142845] rounded-xl bg-[#0c1833] p-4 space-y-2.5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
                       <span
@@ -231,19 +245,19 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
                       >
                         {ep.method}
                       </span>
-                      <code className="text-xs font-mono font-semibold text-slate-200">{ep.path}</code>
+                      <code className="text-xs font-mono font-semibold text-slate-100">{ep.path}</code>
                     </div>
                     <span className="text-[11px] text-slate-400">{ep.description}</span>
                   </div>
 
                   {ep.requestBody && (
-                    <div className="bg-[#07090e] rounded-lg p-2.5 border border-[#1b233a] text-[11px] font-mono text-slate-300">
+                    <div className="bg-[#050b18] rounded-lg p-2.5 border border-[#142845] text-[11px] font-mono text-slate-300">
                       <span className="text-[10px] text-slate-400 block mb-1">Request Body Schema:</span>
                       <code>{ep.requestBody}</code>
                     </div>
                   )}
 
-                  <div className="bg-[#07090e] rounded-lg p-2.5 border border-[#1b233a] text-[11px] font-mono text-cyan-400/90 overflow-x-auto">
+                  <div className="bg-[#050b18] rounded-lg p-2.5 border border-[#142845] text-[11px] font-mono text-cyan-300 overflow-x-auto">
                     <span className="text-[10px] text-slate-400 block mb-1">Response Sample (200 OK):</span>
                     <code>{ep.responseSample}</code>
                   </div>
@@ -253,61 +267,33 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
           </div>
         )}
 
-        {/* TAB 7: UI LAYOUT & COMPONENTS */}
-        {activeTab === 'frontend' && (
-          <div className="space-y-4 animate-in fade-in duration-150">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="p-3.5 rounded-xl bg-[#0c101c] border border-[#1b233a]">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Color Palette</span>
-                <p className="text-xs font-semibold text-violet-300">Cosmic Obsidian & Cyber Cyan</p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-[#0c101c] border border-[#1b233a]">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Theme Contrast</span>
-                <p className="text-xs font-semibold text-slate-200">Deep Glassmorphism (WCAG AAA)</p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-[#0c101c] border border-[#1b233a]">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block mb-1">Typography</span>
-                <p className="text-xs font-semibold text-slate-200">Inter + JetBrains Monospace</p>
-              </div>
-            </div>
-
-            <div className="border border-[#1b233a] rounded-xl p-4 bg-[#0c101c]">
-              <h4 className="text-xs font-mono font-semibold text-slate-300 mb-2">React 19 Component Hierarchy</h4>
-              <div className="flex flex-wrap gap-1.5">
-                {artifacts.frontend.componentTree.map((comp, idx) => (
-                  <span key={idx} className="text-xs font-mono px-2.5 py-1 rounded bg-[#161c2e] text-slate-200 border border-[#1b233a]">
-                    &lt;{comp} /&gt;
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="border border-[#1b233a] rounded-xl overflow-hidden bg-[#07090e]">
-              <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d1222] border-b border-[#1b233a]">
-                <span className="text-xs font-mono font-medium text-slate-300">src/components/DashboardView.tsx</span>
-                <button
-                  onClick={() => handleCopy(artifacts.frontend.reactAppCode, 'reactCode')}
-                  className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 px-2.5 py-1 rounded bg-[#161c2e] transition"
-                >
-                  {copiedKey === 'reactCode' ? <Check className="w-3 h-3 text-cyan-400" /> : <Copy className="w-3 h-3" />}
-                  <span>{copiedKey === 'reactCode' ? 'Copied' : 'Copy React Component'}</span>
-                </button>
-              </div>
-              <pre className="p-4 text-xs font-mono text-slate-300 overflow-x-auto max-h-64 leading-relaxed">
-                {artifacts.frontend.reactAppCode}
-              </pre>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 8: WORKSPACE FILES */}
+        {/* TAB 6: WORKSPACE CODE FILES */}
         {activeTab === 'files' && (
           <div className="space-y-4 animate-in fade-in duration-150">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs font-bold text-slate-100 flex items-center gap-2">
+                  <FolderTree className="w-4 h-4 text-emerald-400" />
+                  Codebase File Explorer
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  Target Stack: {artifacts.spec.techStack.frontend} + {artifacts.spec.techStack.backend}
+                </p>
+              </div>
+              <button
+                onClick={handleDownloadFiles}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0c1833] hover:bg-[#142845] border border-[#142845] text-xs font-mono text-cyan-300 transition"
+              >
+                <Download className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Export Bundle (JSON)</span>
+              </button>
+            </div>
+
             <div className="flex flex-col md:flex-row gap-4">
               {/* File list tree */}
-              <div className="w-full md:w-56 space-y-1 border border-[#1b233a] rounded-xl p-2 bg-[#0c101c]">
+              <div className="w-full md:w-60 space-y-1 border border-[#142845] rounded-xl p-2 bg-[#0c1833]">
                 <span className="text-[10px] font-mono uppercase text-slate-400 px-2 py-1 block">
-                  Project Workspace
+                  Project Files ({Object.keys(artifacts.files).length})
                 </span>
                 {Object.keys(artifacts.files).map((filename) => (
                   <button
@@ -315,8 +301,8 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
                     onClick={() => setActiveFile(filename)}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono transition flex items-center justify-between ${
                       activeFile === filename
-                        ? 'bg-violet-500/15 text-violet-300 border border-violet-500/40 font-semibold'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#161c2e]'
+                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 font-semibold'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#142845]'
                     }`}
                   >
                     <span className="truncate">{filename}</span>
@@ -325,23 +311,39 @@ export const ArtifactsViewer: React.FC<ArtifactsViewerProps> = ({
               </div>
 
               {/* File Viewer */}
-              <div className="flex-1 border border-[#1b233a] rounded-xl overflow-hidden bg-[#07090e]">
-                <div className="flex items-center justify-between px-4 py-2.5 bg-[#0d1222] border-b border-[#1b233a]">
-                  <span className="text-xs font-mono font-semibold text-slate-300">{activeFile}</span>
+              <div className="flex-1 border border-[#142845] rounded-xl overflow-hidden bg-[#050b18]">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-[#0c1833] border-b border-[#142845]">
+                  <span className="text-xs font-mono font-semibold text-slate-200">{activeFile}</span>
                   <button
                     onClick={() => handleCopy(artifacts.files[activeFile] || '', activeFile)}
-                    className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 px-2.5 py-1 rounded bg-[#161c2e] transition"
+                    className="flex items-center gap-1 text-[11px] text-slate-300 hover:text-white px-2.5 py-1 rounded bg-[#142845] hover:bg-[#1c3960] transition"
                   >
-                    {copiedKey === activeFile ? <Check className="w-3 h-3 text-cyan-400" /> : <Copy className="w-3 h-3" />}
-                    <span>{copiedKey === activeFile ? 'Copied' : 'Copy Content'}</span>
+                    {copiedKey === activeFile ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedKey === activeFile ? 'Copied' : 'Copy File'}</span>
                   </button>
                 </div>
-                <pre className="p-4 text-xs font-mono text-slate-300 overflow-x-auto max-h-96 leading-relaxed">
+                <pre className="p-4 text-xs font-mono text-slate-200 overflow-x-auto max-h-[460px] leading-relaxed">
                   {artifacts.files[activeFile] || '// Empty file'}
                 </pre>
               </div>
             </div>
           </div>
+        )}
+
+        {/* TAB 7: LOW-TOKEN ECONOMY */}
+        {activeTab === 'token' && (
+          <TokenBudgetMeter metrics={artifacts.tokenMetrics} />
+        )}
+
+        {/* TAB 8: SELF-TESTING & QA */}
+        {activeTab === 'qa' && (
+          <SelfTestHarness
+            tests={artifacts.selfTests}
+            certifiedComplete={artifacts.certifiedComplete}
+            projectId={artifacts.spec.id}
+            onRunTests={onRunSelfTests}
+            isRunning={isSelfTesting}
+          />
         )}
 
       </div>
