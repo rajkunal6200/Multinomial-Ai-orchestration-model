@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg-base: #040711;
+  --color-bg-surface: #070d1e;
+  --color-bg-surface-elevated: #0b142c;
+  --color-border: #14213d;
+  --color-border-glow: rgba(16, 185, 129, 0.35);
+  --color-accent-primary: #10b981;
+  --color-accent-secondary: #06b6d4;
+  --color-accent-highlight: #34d399;
+}
+
+[data-theme="emerald"] {
+  --color-bg-base: #040812;
+  --color-bg-surface: #070f20;
+  --color-bg-surface-elevated: #0c1833;
+  --color-border: #142845;
+  --color-border-glow: rgba(16, 185, 129, 0.4);
+  --color-accent-primary: #10b981;
+  --color-accent-secondary: #06b6d4;
+  --color-accent-highlight: #34d399;
+}
+
+[data-theme="cyan"] {
+  --color-bg-base: #030714;
+  --color-bg-surface: #061026;
+  --color-bg-surface-elevated: #0a193c;
+  --color-border: #11274d;
+  --color-border-glow: rgba(6, 182, 212, 0.4);
+  --color-accent-primary: #06b6d4;
+  --color-accent-secondary: #3b82f6;
+  --color-accent-highlight: #38bdf8;
+}
+
+[data-theme="violet"] {
+  --color-bg-base: #070412;
+  --color-bg-surface: #0f0924;
+  --color-bg-surface-elevated: #180f38;
+  --color-border: #28154e;
+  --color-border-glow: rgba(139, 92, 246, 0.4);
+  --color-accent-primary: #8b5cf6;
+  --color-accent-secondary: #ec4899;
+  --color-accent-highlight: #a78bfa;
+}
+
+[data-theme="amber"] {
+  --color-bg-base: #0a0805;
+  --color-bg-surface: #140f09;
+  --color-bg-surface-elevated: #211910;
+  --color-border: #382512;
+  --color-border-glow: rgba(245, 158, 11, 0.4);
+  --color-accent-primary: #f59e0b;
+  --color-accent-secondary: #f97316;
+  --color-accent-highlight: #fbbf24;
+}
+
+/* Custom scrollbar for sleek terminal and code blocks */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(4, 7, 17, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* Subtle grid background */
+.bg-grid-subtle {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

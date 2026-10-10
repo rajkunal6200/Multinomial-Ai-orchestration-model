@@ -1,0 +1,6 @@
+{
+  "name": "Multi-Agent AI Development System",
+  "description": "Production-ready autonomous multi-agent dev team utilizing zero-cost free-tier AI models (DeepSeek, Gemini Flash, Groq Llama, Qwen) to architect, code, integrate, and QA applications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
